@@ -1,0 +1,78 @@
+{
+  "summarization": [
+    "summarize",
+    "overview",
+    "abstract",
+    "tl;dr"
+  ],
+  "ethics_review": [
+    "ethics",
+    "bias",
+    "fairness",
+    "moral"
+  ],
+  "code": [
+    "code",
+    "function",
+    "python",
+    "javascript",
+    "compile"
+  ],
+  "image_processing": [
+    "image",
+    "visualize",
+    "picture",
+    "draw",
+    "photo"
+  ],
+  "translation": [
+    "translate",
+    "language",
+    "english to",
+    "in spanish"
+  ],
+  "reasoning": [
+    "analyze",
+    "explain",
+    "interpret",
+    "deduce"
+  ],
+  "retrieval": [
+    "search",
+    "find",
+    "lookup",
+    "retrieve"
+  ],
+  "creative_writing": [
+    "story",
+    "poem",
+    "novel",
+    "creative",
+    "fiction"
+  ],
+  "math": [
+    "equation",
+    "math",
+    "calculate",
+    "formula",
+    "solve"
+  ],
+  "data_analysis": [
+    "statistics",
+    "data",
+    "analyze data",
+    "chart"
+  ],
+  "email_writing": [
+    "email",
+    "compose email",
+    "write an email"
+  ],
+  "chat": [
+    "chat",
+    "hi",
+    "hello",
+    "talk",
+    "assistant"
+  ]
+}

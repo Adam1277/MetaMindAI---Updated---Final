@@ -1,0 +1,14 @@
+{
+  "summarization": "mistral-small",
+  "ethics_review": "mistral-small",
+  "code": "gpt-3.5-turbo",
+  "image_processing": "gpt-3.5-turbo",
+  "translation": "gpt-3.5-turbo",
+  "reasoning": "gemini-pro",
+  "retrieval": "gemini-pro",
+  "creative_writing": "gpt-3.5-turbo",
+  "math": "gemini-pro",
+  "data_analysis": "gemini-pro",
+  "email_writing": "gpt-3.5-turbo",
+  "chat": "gpt-3.5-turbo"
+}

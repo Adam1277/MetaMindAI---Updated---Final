@@ -472,8 +472,8 @@
       <div class="sidebar-content">
         <h2>Navigation</h2>
         <ul>
-          <li><a href="#">Prompt</a></li>
-          <li><a href="#">Database</a></li>
+          <li><a href="#" onclick="window.location.href='promptpage.html' ">Prompt</a></li>
+          <li><a href="#" onclick="window.location.href='datastorage.html' ">Database</a></li>
         </ul>
       </div>
     </div>
@@ -518,19 +518,26 @@
       <p>View LLM models actively engaged in the system.</p>
       <div class="models-container">
         <div class="model-item">
-          <div class="model-icon">C</div>
+          <div class="model-icon">
+            <img src="claude.png" alt="" />
+          </div>
           <span class="model-name">Claude</span>
         </div>
         <div class="model-item">
-          <div class="model-icon">G</div>
+          <div class="model-icon">
+            <img src="gpt4o.png" alt="" />
+          </div>
           <span class="model-name">GPT-4o</span>
         </div>
         <div class="model-item">
-          <div class="model-icon">Ge</div>
+          <div class="model-icon">
+            <img src=".pg" alt="" />
+          </div>
           <span class="model-name">Gemini</span>
         </div>
       </div>
     </div>
+
 
     <div class="corner-box bottom-left">
       <h2>Overview</h2>
@@ -585,7 +592,7 @@
             <div class="robot-eye"></div>
             <div class="robot-eye"></div>
           </div>
-          <button class="start-chat-btn">Start Chat</button>
+          <button class="start-chat-btn" onclick="window.location.href='promptpage.html'">Start Chat</button>
         </div>
       </div>
     </div>
