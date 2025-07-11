@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MetaAgent-Ai Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(to bottom right, #111827, #581c87, #000000);
+        min-height: 100vh;
+        color: white;
+        font-family: system-ui, -apple-system, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Sidebar Toggle Button */
+      #sidebarToggle {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 30;
+        background-color: #0891b2;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      #sidebarToggle:hover {
+        background-color: #0e7490;
+      }
+
+      /* Sidebar */
+      #sidebar {
+        position: fixed;
+        top: 3rem;
+        left: 0;
+        width: 16rem;
+        height: 100%;
+        background-color: #1f2937;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 20;
+      }
+
+      #sidebar.open {
+        transform: translateX(0);
+      }
+
+      #sidebar .sidebar-content {
+        padding: 1.5rem;
+        padding-top: 4rem;
+      }
+
+      #sidebar h2 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #67e8f9;
+        margin-bottom: 1rem;
+      }
+
+      #sidebar ul {
+        list-style: none;
+      }
+
+      #sidebar li {
+        margin-bottom: 1rem;
+      }
+
+      #sidebar a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      #sidebar a:hover {
+        color: #67e8f9;
+      }
+
+      /* Overlay */
+      #overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 10;
+      }
+
+      #overlay.show {
+        display: block;
+      }
+
+      /* Title Section */
+      .title-section {
+        text-align: center;
+        padding-top: 2rem;
+      }
+
+      .title-section h1 {
+        font-size: 2.25rem;
+        font-weight: bold;
+        letter-spacing: 0.025em;
+        color: #22d3ee;
+      }
+
+      .title-section p {
+        color: #d1d5db;
+        margin-top: 0.25rem;
+        font-size: 1rem;
+      }
+
+      /* Corner Boxes */
+      .corner-box {
+        position: absolute;
+        width: 33.333%;
+        background: linear-gradient(to bottom right, #1f2937, #374151);
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .corner-box h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #67e8f9;
+        margin-bottom: 0.25rem;
+      }
+
+      .corner-box p {
+        color: #9ca3af;
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .top-left {
+        top: 8rem;
+        left: 1rem;
+        height: 13rem;
+      }
+
+      .top-right {
+        top: 8rem;
+        right: 1rem;
+        height: 10rem;
+      }
+
+      .bottom-left {
+        bottom: 2.5rem;
+        left: 1rem;
+        height: 7rem;
+      }
+
+      .bottom-right {
+        bottom: 2.5rem;
+        right: 1rem;
+        height: 11rem;
+      }
+
+      /* Models Section */
+      .models-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 0.5rem;
+      }
+
+      .model-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .model-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid #22d3ee;
+        margin-bottom: 0.25rem;
+        background-color: #374151;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+      }
+
+      .model-name {
+        font-size: 0.75rem;
+        color: #d1d5db;
+      }
+
+      /* Center Button Container */
+      .center-container {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      .dust-ring {
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Individual dust particles */
+      .dust-particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(34, 211, 238, 0.8);
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(34, 211, 238, 0.6);
+      }
+
+      .dust-particle:nth-child(1) {
+        top: 50%;
+        left: 0;
+        animation: orbit 15s linear infinite;
+      }
+
+      .dust-particle:nth-child(2) {
+        top: 0;
+        left: 50%;
+        background: rgba(139, 92, 246, 0.8);
+        box-shadow: 0 0 6px rgba(139, 92, 246, 0.6);
+        animation: orbit 18s linear infinite 2s;
+      }
+
+      .dust-particle:nth-child(3) {
+        top: 50%;
+        right: 0;
+        width: 2px;
+        height: 2px;
+        animation: orbit 20s linear infinite 4s;
+      }
+
+      .dust-particle:nth-child(4) {
+        bottom: 0;
+        left: 50%;
+        background: rgba(139, 92, 246, 0.8);
+        box-shadow: 0 0 6px rgba(139, 92, 246, 0.6);
+        animation: orbit 16s linear infinite 6s;
+      }
+
+      .dust-particle:nth-child(5) {
+        top: 20%;
+        left: 10%;
+        width: 2px;
+        height: 2px;
+        animation: orbit 22s linear infinite 8s;
+      }
+
+      .dust-particle:nth-child(6) {
+        top: 20%;
+        right: 10%;
+        background: rgba(165, 180, 252, 0.8);
+        box-shadow: 0 0 6px rgba(165, 180, 252, 0.6);
+        animation: orbit 19s linear infinite 10s;
+      }
+
+      .dust-particle:nth-child(7) {
+        bottom: 20%;
+        left: 10%;
+        width: 4px;
+        height: 4px;
+        animation: orbit 17s linear infinite 12s;
+      }
+
+      .dust-particle:nth-child(8) {
+        bottom: 20%;
+        right: 10%;
+        width: 2px;
+        height: 2px;
+        background: rgba(165, 180, 252, 0.8);
+        box-shadow: 0 0 6px rgba(165, 180, 252, 0.6);
+        animation: orbit 21s linear infinite 14s;
+      }
+
+      @keyframes orbit {
+        from {
+          transform: rotate(0deg) translateX(125px) rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg) translateX(125px) rotate(-360deg);
+        }
+      }
+
+      /* Robot head */
+      .robot-head {
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        background: linear-gradient(135deg, #374151 0%, #1f2937 50%, #111827 100%);
+        border-radius: 30% 30% 40% 40%;
+        box-shadow: 
+          inset -10px -10px 20px rgba(0, 0, 0, 0.5),
+          inset 5px 5px 10px rgba(34, 211, 238, 0.2),
+          0 0 30px rgba(34, 211, 238, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        animation: robotGlow 4s ease-in-out infinite;
+      }
+
+      /* Robot eyes */
+      .robot-eyes {
+        position: absolute;
+        top: 35px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+      }
+
+      .robot-eye {
+        width: 20px;
+        height: 20px;
+        background: radial-gradient(circle, #22d3ee 0%, #0891b2 70%);
+        border-radius: 50%;
+        box-shadow: 
+          0 0 15px rgba(34, 211, 238, 0.8),
+          inset 0 0 5px rgba(255, 255, 255, 0.5);
+        animation: eyePulse 2s ease-in-out infinite;
+      }
+
+      /* Robot antenna */
+      .robot-antenna {
+        position: absolute;
+        top: -15px;
+        width: 3px;
+        height: 20px;
+        background: #67e8f9;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .robot-antenna::before {
+        content: '';
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+        background: radial-gradient(circle, #22d3ee 0%, #0891b2 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+        animation: antennaPulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes robotGlow {
+        0%, 100% {
+          box-shadow: 
+            inset -10px -10px 20px rgba(0, 0, 0, 0.5),
+            inset 5px 5px 10px rgba(34, 211, 238, 0.2),
+            0 0 30px rgba(34, 211, 238, 0.3);
+        }
+        50% {
+          box-shadow: 
+            inset -10px -10px 20px rgba(0, 0, 0, 0.5),
+            inset 5px 5px 10px rgba(34, 211, 238, 0.4),
+            0 0 50px rgba(34, 211, 238, 0.5);
+        }
+      }
+
+      @keyframes eyePulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      @keyframes antennaPulse {
+        0%, 100% {
+          opacity: 0.8;
+          transform: translateX(-50%) scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1.3);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          width: 0%;
+        }
+        to {
+          width: 75%;
+        }
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+      }
+
+      .start-chat-btn {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.8), rgba(139, 92, 246, 0.8));
+        backdrop-filter: blur(10px);
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        box-shadow: 
+          0 0 20px rgba(34, 211, 238, 0.5),
+          inset 0 0 10px rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease-in-out;
+        z-index: 20;
+        border: 1px solid rgba(34, 211, 238, 0.5);
+        cursor: pointer;
+        margin-top: 25px;
+      }
+
+      .start-chat-btn:hover {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 1), rgba(139, 92, 246, 1));
+        transform: scale(1.05);
+        box-shadow: 
+          0 0 30px rgba(34, 211, 238, 0.7),
+          inset 0 0 15px rgba(255, 255, 255, 0.3);
+      }
+
+      /* Bar hover effect */
+      .corner-box .usage-bar:hover .usage-percent {
+        opacity: 1 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebarToggle">☰ Menu</button>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div class="sidebar-content">
+        <h2>Navigation</h2>
+        <ul>
+          <li><a href="#">Prompt</a></li>
+          <li><a href="#">Database</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Click Outside Overlay -->
+    <div id="overlay"></div>
+
+    <!-- Title and Subtitle -->
+    <div class="title-section">
+      <h1>🤖 MetaAgent-Ai</h1>
+      <p>Your unified interface for AI agent management</p>
+    </div>
+
+    <!-- Corner Boxes -->
+    <div class="corner-box top-left">
+      <h2>Usage</h2>
+      <p>Visual breakdown of LLM usage across platforms.</p>
+      <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 120px; margin-top: 10px;">
+        <div style="display: flex; flex-direction: column; align-items: center; width: 30%;">
+          <div class="usage-bar" style="width: 100%; background-color: #22c55e; height: 80px; border-radius: 4px; margin-bottom: 4px; position: relative; cursor: pointer;" title="80%">
+            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; font-size: 0.875rem; opacity: 0; transition: opacity 0.3s;" class="usage-percent">80%</span>
+          </div>
+          <span style="font-size: 0.75rem; color: #d1d5db;">Claude</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; width: 30%;">
+          <div class="usage-bar" style="width: 100%; background-color: #ef4444; height: 60px; border-radius: 4px; margin-bottom: 4px; position: relative; cursor: pointer;" title="60%">
+            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; font-size: 0.875rem; opacity: 0; transition: opacity 0.3s;" class="usage-percent">60%</span>
+          </div>
+          <span style="font-size: 0.75rem; color: #d1d5db;">GPT-4o</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; width: 30%;">
+          <div class="usage-bar" style="width: 100%; background-color: #eab308; height: 100px; border-radius: 4px; margin-bottom: 4px; position: relative; cursor: pointer;" title="100%">
+            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; font-size: 0.875rem; opacity: 0; transition: opacity 0.3s;" class="usage-percent">100%</span>
+          </div>
+          <span style="font-size: 0.75rem; color: #d1d5db;">Gemini</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="corner-box top-right">
+      <h2>Models Used</h2>
+      <p>View LLM models actively engaged in the system.</p>
+      <div class="models-container">
+        <div class="model-item">
+          <div class="model-icon">C</div>
+          <span class="model-name">Claude</span>
+        </div>
+        <div class="model-item">
+          <div class="model-icon">G</div>
+          <span class="model-name">GPT-4o</span>
+        </div>
+        <div class="model-item">
+          <div class="model-icon">Ge</div>
+          <span class="model-name">Gemini</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="corner-box bottom-left">
+      <h2>Overview</h2>
+      <p>Summarized insights and health metrics for all agents.</p>
+      <div style="margin-top: 10px;">
+        <div style="width: 100%; height: 40px; background-color: #1f2937; border-radius: 20px; overflow: hidden; position: relative;">
+          <div style="width: 75%; height: 100%; background: linear-gradient(to right, #10b981, #22c55e); border-radius: 20px; position: relative; animation: slideIn 1.5s ease-out;">
+            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: white; font-weight: bold; font-size: 0.875rem;">75%</span>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 5px; color: #22c55e; font-size: 0.75rem;">System Health</p>
+      </div>
+    </div>
+
+    <div class="corner-box bottom-right">
+      <h2>Price</h2>
+      <p>Estimate costs based on current usage trends.</p>
+      <div style="margin-top: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 0.7rem; color: #d1d5db;">Claude</span>
+          <span style="font-size: 0.75rem; color: #22c55e; font-weight: bold;">$1.75</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 0.7rem; color: #d1d5db;">GPT-4o</span>
+          <span style="font-size: 0.75rem; color: #ef4444; font-weight: bold;">$1.20</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.7rem; color: #d1d5db;">Gemini</span>
+          <span style="font-size: 0.75rem; color: #eab308; font-weight: bold;">$1.95</span>
+        </div>
+        <div style="border-top: 1px solid #374151; margin-top: 6px; padding-top: 4px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.75rem; color: #67e8f9;">Total</span>
+          <span style="font-size: 0.875rem; color: #67e8f9; font-weight: bold;">$4.90</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Start Chat Button in Center -->
+    <div class="center-container">
+      <div class="dust-ring">
+        <span class="dust-particle"></span>
+        <span class="dust-particle"></span>
+        <span class="dust-particle"></span>
+        <span class="dust-particle"></span>
+        <span class="dust-particle"></span>
+        <span class="dust-particle"></span>
+        <span class="dust-particle"></span>
+        <span class="dust-particle"></span>
+        <div class="robot-head">
+          <div class="robot-antenna"></div>
+          <div class="robot-eyes">
+            <div class="robot-eye"></div>
+            <div class="robot-eye"></div>
+          </div>
+          <button class="start-chat-btn">Start Chat</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+      const toggleButton = document.getElementById("sidebarToggle");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      toggleButton.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+      });
+
+      overlay.addEventListener("click", () => {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      });
+    </script>
+  </body>
+</html>
